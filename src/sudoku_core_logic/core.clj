@@ -34,7 +34,7 @@
   (first
    (run 1 [q]
      (let [cells       (repeatedly 81 lvar)
-           rows        (vec (map vec (partition 9 cells)))
+           rows        (mapv vec (partition 9 cells))
            columns     (apply map vector rows)
            squares     (get-squares rows)
            constraints (flatten constraints)]
