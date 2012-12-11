@@ -24,16 +24,17 @@
 (defn solve-sudoku [constraints]
   (first
    (run 1 [q]
-     (let [cells       (repeatedly 81 lvar)
-           rows        (mapv vec (partition 9 cells))
-           columns     (apply map vector rows)
-           squares     (get-squares rows)
-           constraints (map #(if (zero? %) (lvar) %)
-                            (flatten constraints))]
+     (let [sudoku-domain (domain 1 2 3 4 5 6 7 8 9)
+           cells         (repeatedly 81 lvar)
+           rows          (mapv vec (partition 9 cells))
+           columns       (apply map vector rows)
+           squares       (get-squares rows)
+           constraints   (map #(if (zero? %) (lvar) %)
+                              (flatten constraints))]
        (all
-        (everyg #(infd % (domain 1 2 3 4 5 6 7 8 9)) cells)
+        (everyg #(infd % sudoku-domain) cells)
         (== cells constraints)
         (== q rows)
-        (everyg distinctfd squares)
         (everyg distinctfd rows)
-        (everyg distinctfd columns))))))
+        (everyg distinctfd columns)
+        (everyg distinctfd squares))))))
