@@ -21,7 +21,7 @@
     (all
      (if (zero? constraint)
        succeed
-       (== (first vars) constraint))
+       (firsto vars constraint))
      (sudoku-constraino (next vars) constraints))
     succeed))
 
