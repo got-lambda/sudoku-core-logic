@@ -16,15 +16,6 @@
    [0 0 8  5 0 0  0 1 0]
    [0 9 0  0 0 0  4 0 0]])
 
-(defn sudoku-constraino [vars [constraint & constraints]]
-  (if (seq vars)
-    (all
-     (if (zero? constraint)
-       succeed
-       (firsto vars constraint))
-     (sudoku-constraino (next vars) constraints))
-    succeed))
-
 (defn get-squares [rows]
   (for [i (range 3) j (range 3)]
     (for [ii (range 3) jj (range 3)]
@@ -37,11 +28,12 @@
            rows        (mapv vec (partition 9 cells))
            columns     (apply map vector rows)
            squares     (get-squares rows)
-           constraints (flatten constraints)]
+           constraints (map #(if (zero? %) (lvar) %)
+                            (flatten constraints))]
        (all
+        (everyg #(infd % (domain 1 2 3 4 5 6 7 8 9)) cells)
+        (== cells constraints)
         (== q rows)
-        (sudoku-constraino cells constraints)
         (everyg distinctfd squares)
         (everyg distinctfd rows)
-        (everyg distinctfd columns)
-        (everyg #(infd % (domain 1 2 3 4 5 6 7 8 9)) cells))))))
+        (everyg distinctfd columns))))))
