@@ -11,22 +11,21 @@
        (map flatten)))
 
 (defn solve-sudoku [constraints]
-  (first
-   (run 1 [q]
-     (let [sudoku-domain (domain 1 2 3 4 5 6 7 8 9)
-           cells         (repeatedly 81 lvar)
-           rows          (mapv vec (partition 9 cells))
-           columns       (apply map vector rows)
-           squares       (get-squares cells)
-           constraints   (map #(if (zero? %) (lvar) %)
-                              (flatten constraints))]
-       (all
-        (everyg #(infd % sudoku-domain) cells)
-        (== cells constraints)
-        (== q rows)
-        (everyg distinctfd rows)
-        (everyg distinctfd columns)
-        (everyg distinctfd squares))))))
+  (let [sudoku-domain (domain 1 2 3 4 5 6 7 8 9)
+        cells         (repeatedly 81 lvar)
+        rows          (mapv vec (partition 9 cells))
+        columns       (apply map vector rows)
+        squares       (get-squares cells)
+        constraints   (map #(if (zero? %) (lvar) %)
+                           (flatten constraints))]
+    (first
+     (run 1 [q]
+       (everyg #(infd % sudoku-domain) cells)
+       (== cells constraints)
+       (== q rows)
+       (everyg distinctfd rows)
+       (everyg distinctfd columns)
+       (everyg distinctfd squares)))))
 
 (def super-hard-sudoku
   [[8 0 0  0 0 0  0 0 0]
